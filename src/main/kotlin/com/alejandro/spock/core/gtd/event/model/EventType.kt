@@ -1,0 +1,24 @@
+package com.alejandro.spock.core.gtd.event.model
+
+enum class EventType {
+	APPOINTMENT,
+	TRIP,
+	EXAM,
+	DEADLINE,
+	SPORT_EVENT,
+	ROUTE,
+	WORK_EVENT,
+	CONFERENCE,
+	SESSION,
+	ONLINE_CLASS,
+	MEETING,
+	THEATER,
+	SHOW,
+	CIRCUS,
+	SOCIAL_EVENT,
+	CELEBRATION,
+	BIRTHDAY,
+	FAREWELL,
+	WEDDING,
+	OTHER,
+}

@@ -1,0 +1,21 @@
+package com.alejandro.spock.core.finance.transaction.model
+
+enum class IncomeCategory {
+	SALARY,
+	BONUS,
+	FREELANCE,
+	OTHER_ACTIVE,
+	REAL_ESTATE_SALE,
+	STOCK_SALE,
+	BOND_SALE,
+	MUTUAL_FUND_SALE,
+	CRYPTO_SALE,
+	BUSINESS_SALE,
+	OTHER_CAPITAL_GAIN,
+	INTEREST,
+	DIVIDENDS,
+	RENTAL,
+	COMMISSIONS,
+	OTHER_PASSIVE,
+	OTHER,
+}
