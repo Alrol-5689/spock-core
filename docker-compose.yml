@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: spock-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-spock}
+      POSTGRES_USER: ${POSTGRES_USER:-spock}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-spock_dev_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - spock_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-spock} -d ${POSTGRES_DB:-spock}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  spock_postgres_data:
