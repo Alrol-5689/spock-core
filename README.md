@@ -43,6 +43,62 @@ Comprobacion:
 curl http://localhost:8080/actuator/health
 ```
 
+## Servicio permanente en Ubuntu
+
+En el servidor de Alex, la API se ejecuta como servicio de usuario systemd:
+
+```sh
+systemctl --user status spock-core.service
+```
+
+El servicio usa:
+
+- Unidad instalada: `~/.config/systemd/user/spock-core.service`
+- Unidad versionada: `deploy/systemd/spock-core.service`
+- Directorio de trabajo: `/home/alex/repos/spock-core`
+- Configuracion local: `.env`
+- Jar: `build/libs/spock-core-0.0.1-SNAPSHOT.jar`
+- PostgreSQL: `docker compose up -d postgres`
+
+Instalacion de la unidad versionada:
+
+```sh
+mkdir -p ~/.config/systemd/user
+cp deploy/systemd/spock-core.service ~/.config/systemd/user/spock-core.service
+systemctl --user daemon-reload
+systemctl --user enable --now spock-core.service
+```
+
+Comandos utiles:
+
+```sh
+# Ver estado
+systemctl --user status spock-core.service
+
+# Ver logs
+journalctl --user -u spock-core.service -f
+
+# Reiniciar despues de cambios
+systemctl --user restart spock-core.service
+
+# Reconstruir jar y reiniciar
+./gradlew bootJar
+systemctl --user restart spock-core.service
+```
+
+La API deberia quedar disponible en:
+
+```sh
+curl http://localhost:8080/actuator/health
+```
+
+Si cambia la configuracion de la unidad:
+
+```sh
+systemctl --user daemon-reload
+systemctl --user restart spock-core.service
+```
+
 ## Variables principales
 
 - `SPOCK_CORE_PORT`: puerto HTTP de la aplicacion. Por defecto `8080`.
