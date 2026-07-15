@@ -64,6 +64,10 @@ class DailyLogService(
 	fun getDailyLogByDate(logDate: LocalDate): DailyLogResponse =
 		(dailyLogRepository.findByLogDate(logDate) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Daily log $logDate not found")).toResponse()
 
+	@Transactional(readOnly = true)
+	fun findDailyLogByDate(logDate: LocalDate): DailyLogResponse? =
+		dailyLogRepository.findByLogDate(logDate)?.toResponse()
+
 	@Transactional
 	fun updateDailyLog(id: UUID, request: UpdateDailyLogRequest): DailyLogResponse {
 		val dailyLog = dailyLog(id)

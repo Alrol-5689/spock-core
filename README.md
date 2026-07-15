@@ -111,3 +111,52 @@ Si PostgreSQL se gestiona fuera de este repo, puedes desactivar la integracion D
 ```sh
 SPRING_DOCKER_COMPOSE_ENABLED=false ./gradlew bootRun
 ```
+
+## Endpoints operativos para asistentes
+
+Ademas del CRUD base (`/tasks`, `/projects`, `/events`, `/reminders`, etc.), la API expone vistas pensadas para automatizaciones y clientes como Spock/OpenClaw.
+
+Agenda de hoy:
+
+```sh
+curl "http://localhost:8080/agenda/today"
+curl "http://localhost:8080/agenda/today?date=2026-07-15"
+```
+
+Devuelve una vista agregada con:
+
+- tareas activas vencidas o planificadas para la fecha
+- proyectos abiertos
+- eventos de la fecha
+- recordatorios pendientes hasta el final del dia
+- ocurrencias de habitos de la fecha
+- daily log si existe
+
+Tareas operativas:
+
+```sh
+curl "http://localhost:8080/tasks/open"
+curl "http://localhost:8080/tasks/today"
+curl "http://localhost:8080/tasks/today?date=2026-07-15"
+```
+
+`/tasks/today` incluye tareas activas (`OPEN`, `IN_PROGRESS`, `WAITING`) con `dueAt` vencido o dentro del dia, y tareas con `scheduledAt` en esa fecha. El orden prioriza urgencia, fecha limite, fecha planificada y titulo.
+
+Proyectos abiertos:
+
+```sh
+curl "http://localhost:8080/projects/open"
+```
+
+Incluye proyectos `ACTIVE` y `ON_HOLD`, ordenados por fecha objetivo (`dueDate`) y titulo.
+
+Recordatorios pendientes para entrega:
+
+```sh
+curl "http://localhost:8080/reminders/due"
+curl "http://localhost:8080/reminders/due?until=2026-07-15T18:00:00Z"
+```
+
+Este es el endpoint recomendado para un cron de avisos: consulta recordatorios `PENDING` cuyo `remindAt` sea anterior o igual a `until`. Tras avisar al usuario, el cliente debe marcar el recordatorio como `SENT` con `PATCH /reminders/{id}`.
+
+Regla de arquitectura: estos endpoints son vistas humanas/operativas. No son un espejo de tablas internas ni sustituyen al CRUD base.

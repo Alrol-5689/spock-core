@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.UUID
 
 @RestController
@@ -22,6 +25,14 @@ class TaskController(
 	@GetMapping("/tasks")
 	fun listTasks(): List<TaskResponse> =
 		taskService.listTasks()
+
+	@GetMapping("/tasks/open")
+	fun listOpenTasks(): List<TaskResponse> =
+		taskService.listOpenTasks()
+
+	@GetMapping("/tasks/today")
+	fun listTodayTasks(@RequestParam(required = false) date: LocalDate?): List<TaskResponse> =
+		taskService.listTodayTasks(date ?: LocalDate.now(ZoneOffset.UTC))
 
 	@PostMapping("/tasks")
 	@ResponseStatus(HttpStatus.CREATED)

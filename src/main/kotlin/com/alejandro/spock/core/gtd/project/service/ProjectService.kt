@@ -4,6 +4,7 @@ import com.alejandro.spock.core.gtd.project.dto.CreateProjectRequest
 import com.alejandro.spock.core.gtd.project.dto.ProjectResponse
 import com.alejandro.spock.core.gtd.project.dto.UpdateProjectRequest
 import com.alejandro.spock.core.gtd.project.model.Project
+import com.alejandro.spock.core.gtd.project.model.ProjectStatus
 import com.alejandro.spock.core.gtd.project.repository.ProjectRepository
 import com.alejandro.spock.core.shared.model.entity.BaseEntity
 import com.alejandro.spock.core.shared.model.entity.EntityType
@@ -22,6 +23,12 @@ class ProjectService(
 	@Transactional(readOnly = true)
 	fun listProjects(): List<ProjectResponse> =
 		projectRepository.findAll().map { it.toResponse() }.sortedBy { it.title }
+
+	@Transactional(readOnly = true)
+	fun listOpenProjects(): List<ProjectResponse> =
+		projectRepository.findAllByStatusIn(openStatuses)
+			.sortedWith(compareBy<Project> { it.dueDate ?: java.time.LocalDate.MAX }.thenBy { it.entity.title })
+			.map { it.toResponse() }
 
 	@Transactional
 	fun createProject(request: CreateProjectRequest): ProjectResponse {
@@ -59,6 +66,8 @@ class ProjectService(
 
 	private fun project(id: UUID): Project =
 		projectRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Project $id not found") }
+
+	private val openStatuses = listOf(ProjectStatus.ACTIVE, ProjectStatus.ON_HOLD)
 
 	private fun Project.toResponse(): ProjectResponse =
 		ProjectResponse(id = requiredId(), title = entity.title, summary = entity.summary, status = status, startedAt = startedAt, dueDate = dueDate, endedAt = endedAt, createdAt = entity.createdAt, updatedAt = entity.updatedAt)

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @Service
@@ -23,6 +24,12 @@ class ReminderService(
 	fun listReminders(status: ReminderStatus?): List<ReminderResponse> =
 		(status?.let { reminderRepository.findAllByStatusOrderByRemindAtAsc(it) }
 			?: reminderRepository.findAllByOrderByRemindAtAsc()).map { it.toResponse() }
+
+	@Transactional(readOnly = true)
+	fun listDueReminders(until: OffsetDateTime = OffsetDateTime.now()): List<ReminderResponse> =
+		reminderRepository
+			.findAllByStatusAndRemindAtLessThanEqualOrderByRemindAtAsc(ReminderStatus.PENDING, until)
+			.map { it.toResponse() }
 
 	@Transactional
 	fun createReminder(request: CreateReminderRequest): ReminderResponse {

@@ -146,6 +146,10 @@ class HabitService(
 			.map { it.toResponse() }
 	}
 
+	@Transactional(readOnly = true)
+	fun listOccurrencesForDate(date: LocalDate): List<HabitOccurrenceResponse> =
+		habitOccurrenceRepository.findAllByDueDateBetweenOrderByDueDateAsc(date, date).map { it.toResponse() }
+
 	@Transactional
 	fun createOccurrence(habitId: UUID, request: CreateHabitOccurrenceRequest): HabitOccurrenceResponse {
 		val habit = getHabitEntity(habitId)

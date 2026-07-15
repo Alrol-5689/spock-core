@@ -23,6 +23,10 @@ class ProjectController(
 	fun listProjects(): List<ProjectResponse> =
 		projectService.listProjects()
 
+	@GetMapping("/projects/open")
+	fun listOpenProjects(): List<ProjectResponse> =
+		projectService.listOpenProjects()
+
 	@PostMapping("/projects")
 	@ResponseStatus(HttpStatus.CREATED)
 	fun createProject(@Valid @RequestBody request: CreateProjectRequest): ProjectResponse =

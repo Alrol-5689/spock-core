@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.util.UUID
 
 @Service
@@ -23,6 +25,13 @@ class EventService(
 	@Transactional(readOnly = true)
 	fun listEvents(): List<EventResponse> =
 		eventRepository.findAll().map { it.toResponse() }.sortedBy { it.startsAt }
+
+	@Transactional(readOnly = true)
+	fun listEventsForDate(date: LocalDate = LocalDate.now(ZoneOffset.UTC)): List<EventResponse> {
+		val from = date.atStartOfDay().atOffset(ZoneOffset.UTC)
+		val to = date.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC)
+		return eventRepository.findAllByStartsAtBetweenOrderByStartsAtAsc(from, to).map { it.toResponse() }
+	}
 
 	@Transactional
 	fun createEvent(request: CreateEventRequest): EventResponse {

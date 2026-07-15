@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @RestController
@@ -24,6 +25,10 @@ class ReminderController(
 	@GetMapping("/reminders")
 	fun listReminders(@RequestParam(required = false) status: ReminderStatus?): List<ReminderResponse> =
 		reminderService.listReminders(status)
+
+	@GetMapping("/reminders/due")
+	fun listDueReminders(@RequestParam(required = false) until: OffsetDateTime?): List<ReminderResponse> =
+		reminderService.listDueReminders(until ?: OffsetDateTime.now())
 
 	@PostMapping("/reminders")
 	@ResponseStatus(HttpStatus.CREATED)

@@ -11,4 +11,6 @@ interface HabitOccurrenceRepository : JpaRepository<HabitOccurrence, UUID> {
 		from: LocalDate,
 		to: LocalDate,
 	): List<HabitOccurrence>
+
+	fun findAllByDueDateBetweenOrderByDueDateAsc(from: LocalDate, to: LocalDate): List<HabitOccurrence>
 }
