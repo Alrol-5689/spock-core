@@ -1,42 +1,20 @@
-HELP.md
 .DS_Store
 .env
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+# Local database and generated artifacts
+backups/*
+!backups/.gitkeep
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# Gradle / Kotlin module artifacts
+backend/spock-core/HELP.md
+backend/spock-core/.gradle/
+backend/spock-core/build/
+backend/spock-core/.kotlin/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
+# IDE files
+backend/spock-core/.idea/
+backend/spock-core/*.iws
+backend/spock-core/*.iml
+backend/spock-core/*.ipr
+backend/spock-core/out/
 .vscode/
-
-### Kotlin ###
-.kotlin
